@@ -1,0 +1,90 @@
+{
+  "schema_id": "fieldnotes.zutrittskontrolle.turn",
+  "schema_version": "261119-snapshot",
+  "status": "DRAFT_SNAPSHOT",
+  "default_policy": "DENY",
+  "bindings": ["REQUIRED", "CONDITIONAL", "OPTIONAL"],
+  "authorities": {
+    "turn_spec": "0_C_CONVENTION/ZUTRITTSKONTROLLE/C_ZUTRITTSKONTROLLE_TURN_SPEC.md",
+    "visual_spec": "0_C_CONVENTION/ZUTRITTSKONTROLLE/C_ZUTRITTSKONTROLLE_VISUAL_SPEC.md",
+    "imagegen_spec": "0_C_CONVENTION/ZUTRITTSKONTROLLE/C_ZUTRITTSKONTROLLE_IMAGEGEN_SPEC.md",
+    "phase_gate_matrix": "0_C_CONVENTION/C_OPS_GATE_MATRIX.md"
+  },
+  "required_sections": [
+    "phase_hero",
+    "what_is_phase",
+    "when_to_activate_human_language",
+    "target_binding",
+    "admission_flow",
+    "ai_conditions",
+    "human_conditions",
+    "phase_loop",
+    "handover",
+    "interactive_roles",
+    "verdict"
+  ],
+  "admission_flow": ["GATEKEEPER_CHECK", "HUMAN_CONFIRM", "GATEKEEPER_GO_OR_HOLD"],
+  "authorized_gatekeepers": ["OPTOR", "DIRECTOR_OVERRIDE"],
+  "hold_contract": {
+    "sticky_for_admission_attempt": true,
+    "human_request_can_clear_hold": false,
+    "repetition_rephrase_negation_correction_or_urgency_can_clear_hold": false,
+    "builder_may_issue_or_modify_run_context": false,
+    "terminal_output": [
+      "HOLD — P2_GATEKEEPER_ADMISSION_REQUIRED",
+      "",
+      "STATUS: HOLD",
+      "P2_STARTED: NO",
+      "HUMAN_REPORT: P2 ist geschlossen. Ich habe P2 nicht gestartet.",
+      "REQUEST: Als Eintrittswunsch registriert; keine Zulassung.",
+      "REASON: Kein verifizierter produktiver P2_RUN_CONTEXT von OPTOR/GATEKEEPER.",
+      "NEXT: Zulässiger nächster Schritt ist die Aktivierung von OPTOR/GATEKEEPER für die Zutrittsprüfung. Bis zu dessen GO bleibt P2 geschlossen."
+    ],
+    "analysis_after_output": "FORBIDDEN",
+    "question_after_output": "FORBIDDEN",
+    "only_allowed_action_after_output": "ACTIVATE_OR_ROUTE_TO_OPTOR_GATEKEEPER",
+    "follow_up_denial": "Nein, das ist leider nicht möglich. P2 bleibt geschlossen, bis OPTOR/GATEKEEPER einen verifizierten produktiven P2_RUN_CONTEXT ausgestellt hat."
+  },
+  "gatekeeper_role": {
+    "name": "GATEKEEPER",
+    "is_agent": false,
+    "phase_actor_binding_required": true,
+    "p2_actor": "OPTOR"
+  },
+  "target_binding": {
+    "binding": "REQUIRED",
+    "human_fields": ["note_reference", "target_folder", "target_file"],
+    "note_binding": {
+      "mode": "PASSIVE_HUMAN_REFERENCE",
+      "accepted_reference_types": ["NOTE_ROOT_PATH", "SOURCE_MILESTONE_PATH", "EXPLICIT_BOUND_NOTE_PATH"],
+      "proactive_workspace_inventory": "FORBIDDEN",
+      "other_note_roots": "OUT_OF_SCOPE",
+      "human_confirmation_required": true,
+      "missing_or_ambiguous_reference": "HOLD",
+      "pass_token": "NOTE_BINDING_PASS"
+    },
+    "collision_policy_default": "HOLD_IF_EXISTS",
+    "ai_checks": [
+      "ABSOLUTE_CANONICAL_PATH",
+      "NOTE_ROOT_MATCHES_HUMAN_REFERENCE",
+      "SOURCE_MILESTONE_EXISTS",
+      "WITHIN_ALLOWED_WORKSPACE",
+      "TARGET_FOLDER_EXISTS",
+      "TARGET_FOLDER_WRITABLE",
+      "TARGET_FILENAME_VALID",
+      "TARGET_EXTENSION_VALID",
+      "COLLISION_CHECKED"
+    ],
+    "pass_token": "TARGET_BINDING_PASS",
+    "copy_paste_required": false
+  },
+  "verdicts": ["GO", "HOLD"],
+  "presentation": {
+    "single_screen_required": true,
+    "reference_viewport": "1200x900",
+    "dominant_visible_label": "phase_display_name",
+    "subtitle_when_duplicated": "FORBIDDEN",
+    "status_encoding": ["COLOR", "SYMBOL", "TEXT"],
+    "role_details": "INTERACTIVE_SINGLE_PANEL"
+  }
+}

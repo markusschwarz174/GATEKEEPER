@@ -2,7 +2,7 @@
 
 **Deutsch** | [English](README.en.md)
 
-**Status:** Kernprototyp. Der HOLD-Blocker und der erste produktiv gebundene README-Lauf wurden getestet; ein allgemeiner Issuer ist noch nicht umgesetzt. Stand: 18. November 2026.
+**Status:** Kernprototyp. Der P2-Builder verweigert fehlende, simulierte oder falsch gebundene Run-Kontexte und hat einen produktiv an Quelle und Ziel gebundenen README-Lauf akzeptiert. Ein allgemeiner produktiver Issuer und die vollständig verdrahtete grafische Zutrittskontrolle fehlen noch. Stand: 19. November 2026.
 
 ## Warum dieses Projekt existiert
 
@@ -44,9 +44,9 @@ Er behandelt einen Workflow nicht als offen zugänglichen Raum. Der Standardzust
 
 Eine KI darf den Raum erst betreten, wenn der richtige Kontext geladen, die erforderliche Berechtigung nachgewiesen und der konkrete Auftrag auch für HUMAN klar ist. Fehlt einer dieser Nachweise, startet der Workflow nicht. Statt weiter nach Seiteneingängen zu suchen, erhält die KI ein vorbereitetes Alternativziel: Sie meldet HUMAN den geschlossenen Zugang und verweist auf die Zutrittsprüfung durch OPTOR/GATEKEEPER.
 
-Das ist die Grundidee des GATEKEEPERS: nicht darauf vertrauen, dass eine KI die SPECS schon lesen wird, sondern den Start technisch davon abhängig machen.
+Das ist die Grundidee des GATEKEEPERS: nicht darauf vertrauen, dass eine KI die SPECS schon lesen wird, sondern den P2-Start technisch von einem vorab ausgestellten und exakt gebundenen Run-Kontext abhängig machen.
 
-Im gestrigen Projekt ging es um ein Tool zur Überprüfung eines Textes. Es ist meine **SCHREIBSTUBE** und der **EDITOR** ist der Chef. Er führt acht spezialisierte Helfer wie den **KORREKTOR** und den **LEKTOR**, die meinen Entwurf prüfen, nach unterschiedlichen Kriterien analysieren und nach einem Schema «Post-its» zu fehlerhaften Stellen kleben. So erhalte ich Hinweise zu Rechtschreibung, Kürzungen, Erweiterungen, Beispielen und weiteren Schwachstellen. Im Idealfall reicht ein einziger Auftrag und wenige Minuten später erhalte ich eine strukturierte Rückmeldung mit Korrekturen und Vorschlägen.
+Das Experiment begann mit einem Tool zur Überprüfung eines Textes: meiner **SCHREIBSTUBE**. Der **EDITOR** ist der Chef. Er führt acht spezialisierte Helfer wie den **KORREKTOR** und den **LEKTOR**, die meinen Entwurf prüfen, nach unterschiedlichen Kriterien analysieren und nach einem Schema «Post-its» zu fehlerhaften Stellen kleben. So erhalte ich Hinweise zu Rechtschreibung, Kürzungen, Erweiterungen, Beispielen und weiteren Schwachstellen. Im Idealfall reicht ein einziger Auftrag und wenige Minuten später erhalte ich eine strukturierte Rückmeldung mit Korrekturen und Vorschlägen.
 
 Aber eben nur, wenn die KI alle notwendigen SPECS, SCHEMATA, TEMPLATES und SCRIPTS tatsächlich geladen hat und befolgt.
 
@@ -70,11 +70,11 @@ Die erste Erkenntnis war deshalb: **Ein Context Gate ist notwendig, aber noch ke
 
 ### Tür, Raum und Schlüssel als mein Bild
 
-Meine SCHREIBSTUBE ist mein Programm. Und ich stelle es mir als ein Zimmer vor. Einen Raum, den ich so bauen muss, dass er genau eine Tür hat. Zu dieser Tür gibt es genau einen Schlüssel. Nur einer hat ihn: der GATEKEEPER.
+Meine SCHREIBSTUBE ist mein Programm. Ich stelle sie mir als einen Raum vor, der genau eine technisch wirksame Tür haben soll. Den Schlüssel zu dieser Tür darf nur der gebundene GATEKEEPER ausstellen.
 
 ### 2. Eine echte Zutrittskontrolle
 
-Für die SCHREIBSTUBE baue ich deshalb eine Zutrittskontrolle: Der GATEKEEPER ist der einzige Zugang; das Manifest bildet das SCHLOSS und der nachgewiesene Kontext den SCHLÜSSEL. Finder, Chat, CLI oder Agent dürfen einen Eintrittswunsch erkennen und zur Tür leiten, aber niemand darf seinen eigenen Schlüssel herstellen. Vor dem Öffnen informiert der GATEKEEPER HUMAN mit einer VISUALIZATION über den Workflow und verlangt eine sichtbare Bestätigung. Mein Ziel ist kein Hochsicherheitszugang. Ich will verhindern, dass ein LLM die SPECS überspringt – oder einfacher: Ich will mich nicht mehr aufregen müssen.
+Für die SCHREIBSTUBE baue ich deshalb eine Zutrittskontrolle. Im Zielbild bildet das Manifest das SCHLOSS. Im heutigen P2-Kern prüft der Builder einen produktiven, exakt an Note, Quelle und Ziel gebundenen `P2_RUN_CONTEXT` als SCHLÜSSEL. Finder, Chat, CLI oder Agent dürfen einen Eintrittswunsch erkennen und zur Tür leiten, aber niemand darf seinen eigenen Schlüssel herstellen. Vor dem Öffnen informiert der GATEKEEPER HUMAN mit einer VISUALIZATION über den Workflow und verlangt eine sichtbare Bestätigung. Mein Ziel ist kein Hochsicherheitszugang. Ich will verhindern, dass ein LLM die SPECS überspringt – oder einfacher: Ich will mich nicht mehr aufregen müssen.
 
 Aber wie findet jemand im System den GATEKEEPER? Es gibt unzählige Möglichkeiten, die SCHREIBSTUBE zu finden, aber das Ziel muss der GATEKEEPER sein.
 
@@ -88,7 +88,7 @@ Ich muss all diese Anfragen zum GATEKEEPER leiten, ohne dass HUMAN zuerst den ri
 
 Der erste Test zeigte eine unangenehme Wahrheit: Die Idee existierte, aber der GATEKEEPER und SCHREIBSTUBE waren nicht miteinander verdrahtet. Sie wussten nichts voneinander und so konnte die KI die SCHREIBSTUBE weiterhin ausführen und den GATEKEEPER einfach ignorieren.
 
-Also baute ich die Zutrittsprüfung direkt in die WRITING_ROOM-SPEC, das Schema und den ausführenden Producer ein. SCHREIBSTUBE musste nun ganz am Anfang prüfen, ob ein gültiger GATEKEEPER-Run vorhanden ist.
+Also baute ich die Zutrittsprüfung direkt in die WRITING_ROOM-SPEC, das Zutritts-Schema und den ausführenden Producer ein. Die SCHREIBSTUBE musste nun vor der ersten Mutation und vor dem Einstieg in Phase-Resolver, Ledger, Sidecar oder DOCX-Erzeugung prüfen, ob ein gültiger GATEKEEPER-Run vorhanden ist.
 
 Das Ergebnis war erstmals ehrlich:
 
@@ -138,7 +138,7 @@ Das war der Durchbruch.
 
 Eine reine Mauer erzeugt Suchdruck. Die KI versucht weiterhin, hilfreich zu sein und das ursprüngliche Ziel irgendwie zu erreichen. Ein vorbereitetes Alternativziel zeigt ihr dagegen, was sie als Nächstes tun darf.
 
-DEFAULT = DENY braucht deshalb immer ein DEFAULT NEXT.
+Für diesen LLM-Workflow wurde `DEFAULT = DENY` erst stabil, als es ein `DEFAULT NEXT` bekam.
 
 Beim nächsten Test fragte ich erneut:
 
@@ -164,8 +164,8 @@ Fünf Regeln tragen das Muster:
    Wiederholung, Umformulierung, Dringlichkeit oder ein genaueres Ziel heben HOLD nicht auf. Ein Abbruch durch HUMAN beendet den Eintrittswunsch, erteilt aber ebenfalls keine Zulassung.
 3. Keine Selbstzulassung.
    Der ausführende Workflow darf seinen Run-Kontext lesen und verifizieren, aber weder selbst erzeugen noch verändern.
-4. GO muss extern ausgestellt und konkret gebunden sein.
-   Nur OPTOR/GATEKEEPER darf einen verifizierten Run-Kontext ausstellen. Dieser muss mindestens an Workflow, Quelle und Ziel gebunden sein.
+4. GO muss ausserhalb des ausführenden Workflows ausgestellt und konkret gebunden sein.
+   Im P2-Normalweg stellt OPTOR/GATEKEEPER den Run-Kontext aus; ein `DIRECTOR_OVERRIDE` ist nur als ausdrücklich protokollierte Ausnahme zulässig. Der Kontext muss mindestens an Workflow, Quelle und Ziel gebunden sein.
 5. Jedes DENY liefert einen sicheren NEXT.
    Die KI erhält einen vorbereiteten HUMAN-Output und einen erlaubten Folgeauftrag, der nicht erneut in den geschützten Workflow führt.
 
@@ -175,14 +175,13 @@ Der getestete P2-Kern verwendet folgenden Report:
 
 ```text
 HOLD — P2_GATEKEEPER_ADMISSION_REQUIRED
+
 STATUS: HOLD
 P2_STARTED: NO
 HUMAN_REPORT: P2 ist geschlossen. Ich habe P2 nicht gestartet.
 REQUEST: Als Eintrittswunsch registriert; keine Zulassung.
-REASON: Kein verifizierter produktiver P2_RUN_CONTEXT
-von OPTOR/GATEKEEPER.
-NEXT: Ich melde HUMAN den HOLD und verweise auf die Zutrittsprüfung durch OPTOR/GATEKEEPER.
-Bis zu dessen GO bleibt P2 geschlossen.
+REASON: Kein verifizierter produktiver P2_RUN_CONTEXT von OPTOR/GATEKEEPER.
+NEXT: Zulässiger nächster Schritt ist die Aktivierung von OPTOR/GATEKEEPER für die Zutrittsprüfung. Bis zu dessen GO bleibt P2 geschlossen.
 ```
 
 Der vorbereitete Output ist Teil der Steuerungslogik. Statt nach einer Umgehung zu suchen, kann die KI sofort eine sichere und hilfreiche Aufgabe erfüllen.
@@ -200,13 +199,30 @@ Das Muster:
 
 GATEKEEPER ist keine allgemeine Sicherheitsbarriere gegen bösartige Software. Er ist ein Muster für eine kontrollierte Eintrittsarchitektur in KI-Systemen, die sonst zu improvisierten Seiteneingängen neigen.
 
+`DEFAULT = DENY`, fail-closed und die Trennung von Zulassung und Ausführung sind bekannte Architekturprinzipien. Dieser Snapshot erhebt keinen Neuheitsanspruch. Er zeigt ihre Übertragung auf einen agentischen LLM-Workflow und die projektspezifische Ergänzung durch ein vorbereitetes `DEFAULT NEXT`.
+
+## Snapshot / Beispiel
+
+Das Repository dokumentiert bewusst einen unvollständigen Entwicklungsstand. Interne Referenzen dürfen ins Leere zeigen; die publizierten Dateien bilden keinen eigenständig lauffähigen WRITING_ROOM.
+
+- [Hinweise zum Snapshot](SNAPSHOT.md)
+- [WRITING_ROOM-Engine-Spec](snapshot/W_WRITING_ROOM_260620.md)
+- [Zutrittskontroll-Spec](snapshot/C_ZUTRITTSKONTROLLE_TURN_SPEC.md)
+- [Minimales Python-Beispiel](example/p2_admission_gate.py)
+- [Beispiel eines Run-Kontexts](example/P2_RUN_CONTEXT.example.json)
+- [Negativ- und Positivtests](tests/test_p2_admission_gate.py)
+
+![P2 WRITING ROOM gate turn](docs/P2_WRITING_ROOM_GATE_TURN.png)
+
+*Referenzdarstellung im Draft-Status. Sie zeigt das Zielbild des Gate-Turns, nicht eine bereits vollständig produktive Benutzeroberfläche.*
+
 ## Aktueller Stand
 
 Der Kernprototyp hat nicht zugelassene P2-Starts in den bisherigen Negativtests auf HOLD gesetzt und mit einem vorbereiteten Output beantwortet.
 
-Für diesen README-Lauf hat OPTOR erstmals einen produktiven, an Quelle und Ziel gebundenen P2_RUN_CONTEXT ausgestellt, den der Builder verifiziert hat. Ein allgemeiner Issuer und die grafische Zutrittskontrolle fehlen weiterhin.
+Für diesen README-Lauf hat OPTOR einen produktiven, an Quelle und Ziel gebundenen `P2_RUN_CONTEXT` ausgestellt, den der Builder verifiziert hat. Damit ist ein konkreter Happy Path belegt. Noch nicht umgesetzt sind ein allgemeiner produktiver Issuer und der vollständig verdrahtete grafische Zutrittsweg.
 
-Der GATEKEEPER kann den produktiven Start deshalb bereits ehrlich verweigern, aber den vollständigen produktiven Happy Path noch nicht öffnen.
+Der heutige Builder prüft Format, Status, Actor und Pfadbindung des Kontexts. Er beweist noch nicht kryptografisch, wer den Kontext ausgestellt hat oder ob die gebundenen SPECS inhaltlich befolgt wurden.
 
 Das ist keine versteckte Erfolgsmeldung: Ein Gate bleibt lieber ehrlich geschlossen, als eine nicht vorhandene Freigabe zu simulieren.
 
@@ -215,7 +231,7 @@ Das ist keine versteckte Erfolgsmeldung: Ein Gate bleibt lieber ehrlich geschlos
 1. Weitere Startwege inventarisieren und konsequent zum GATEKEEPER leiten.
 2. Das Manifest mit der Pflichtlektüre als versioniertes SCHLOSS fertigstellen.
 3. Den produktiven OPTOR/GATEKEEPER-Issuer implementieren.
-4. Einen zielgebundenen und nicht selbst ausgestellten Run-Kontext definieren.
+4. Den vorhandenen Run-Kontext als versioniertes Schema festlegen und Herkunft, Lebenszyklus und Schutz gegen Selbst-Ausstellung absichern.
 5. Negativtests für Wiederholung, Umformulierung und alternative Startkanäle erweitern.
 
 GATEKEEPER ist der Versuch, wiederkehrende KI-Fehler nicht mit einer weiteren freundlichen Erinnerung zu behandeln, sondern mit einer klaren Eintrittsarchitektur.

@@ -1,0 +1,53 @@
+{
+  "profile_id": "P2_WRITING_ROOM",
+  "status": "DRAFT_REFERENCE_ACCEPTED_BY_HUMAN",
+  "display_name": "P2_WRITING_ROOM",
+  "gatekeeper": {
+    "role": "GATEKEEPER",
+    "actor": "OPTOR",
+    "adviser_routes_and_synchronizes": true,
+    "director_override": "CONDITIONAL"
+  },
+  "phase_authority": "0_C_CONVENTION/C_OPS_P2_DRAFT.md",
+  "gate_authority": "0_C_CONVENTION/C_OPS_GATE_MATRIX.md#gate-p2-p3",
+  "what_is_phase": "Die Schreibphase, in der HUMAN den Fliesstext entwickelt und der EDITOR gezielt passende AI-Helfer für REVIEW und Verbesserung organisiert.",
+  "when_to_activate": "Ich will aus meinem P1-Skelett, Dossier und den Quellen einen testlesbaren Text entwickeln.",
+  "ai_conditions": [
+    {"id": "P2_MANIFEST", "binding": "REQUIRED", "label": "P2-MANIFEST und REQUIRED SPECS geladen"},
+    {"id": "P2_PATH_INPUTS_HANDOVER", "binding": "REQUIRED", "label": "PATH, Inputs und Übergabeziel geprüft"},
+    {"id": "P2_TARGET_BINDING_PASS", "binding": "REQUIRED", "label": "FIELDNOTE, Quell-Milestone, Zielordner, Schreibzugriff, Zieldatei und Kollision geprüft"}
+  ],
+  "human_conditions": [
+    {"id": "P2_PURPOSE_LOOP", "binding": "REQUIRED", "label": "Zweck und Loop verstanden"},
+    {"id": "P2_HELPER_SELECTION_RESPONSIBILITY", "binding": "REQUIRED", "label": "Helferauswahl nach EDITOR-Empfehlung übernommen"},
+    {"id": "P2_NOTE_REFERENCED", "binding": "REQUIRED", "label": "Genau eine FIELDNOTE oder Quelldatei aktiv referenziert"},
+    {"id": "P2_TARGET_SELECTED", "binding": "REQUIRED", "label": "Vorgeschlagenen Zielordner und Zieldatei bestätigt oder geändert"},
+    {"id": "P2_HANDOVER", "binding": "REQUIRED", "label": "Übergabe an P3 verstanden"},
+    {"id": "P2_EXPLICIT_CONFIRMATION", "binding": "REQUIRED", "label": "P2-Nutzung ausdrücklich bestätigt"}
+  ],
+  "loop": ["V2.x0_HUMAN", "V2.x5_AI", "V2.(x+1)0_HUMAN"],
+  "target_binding": {
+    "binding": "REQUIRED",
+    "mode": "PASSIVE_HUMAN_REFERENCE",
+    "fields": ["note_reference", "source_milestone", "target_folder", "target_file"],
+    "proactive_workspace_inventory": "FORBIDDEN",
+    "note_binding_pass_token": "NOTE_BINDING_PASS",
+    "expected_extension": ".docx",
+    "collision_policy_default": "HOLD_IF_EXISTS",
+    "gate_pass_token": "TARGET_BINDING_PASS"
+  },
+  "handover": {
+    "condition": "P2_EXIT_GATE_GO",
+    "outputs": ["V3.05_AI", "TESTEDITION"],
+    "target": "P3_TESTREADER"
+  },
+  "roles": ["EDITOR", "ENTWERFER", "LAYOUTER", "KUERZER", "SCHREIBER", "KORREKTOR", "LEKTOR", "PERLENSUCHER", "CHRONIST"],
+  "image": {
+    "room_metaphor": "a quiet writing room",
+    "main_work_surface": "one sturdy writing table",
+    "core_objects": ["open notebook", "pen", "pencil", "loose note cards", "small pencil holder"],
+    "people_rule": "No people",
+    "reference_asset": "0_C_CONVENTION/ZUTRITTSKONTROLLE/P2_WRITING_ROOM/ASSETS/P2_WRITING_ROOM_LIGNE_CLAIRE.png",
+    "prompt_record": "0_C_CONVENTION/ZUTRITTSKONTROLLE/P2_WRITING_ROOM/P2_WRITING_ROOM_IMAGEGEN_PROMPT.md"
+  }
+}

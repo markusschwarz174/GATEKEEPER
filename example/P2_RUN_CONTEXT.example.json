@@ -1,0 +1,23 @@
+{
+  "_example_notice": "EXAMPLE ONLY — contractual prototype, not a security credential",
+  "_prototype_limitations": [
+    "no signature or authenticated issuer provenance",
+    "no content-hash binding",
+    "no replay protection"
+  ],
+  "context_format": "P2_RUN_CONTEXT_V1",
+  "simulation_only": false,
+  "control_result": "PASS",
+  "status": "OPEN",
+  "workflow_state": "P2_ACTIVE",
+  "route_id": "FIELDNOTES.P2.WRITING_ROOM",
+  "entry_actor": "EDITOR",
+  "lead_owner": "EDITOR",
+  "gatekeeper_actor": "OPTOR",
+  "target_binding": {
+    "pass_token": "TARGET_BINDING_PASS",
+    "note_root": "demo_note",
+    "source_path": "demo_note/DEMO_V2.40_DRAFT_HUMAN.docx",
+    "target_path": "demo_note/DEMO_V2.45_DRAFT_AI.docx"
+  }
+}
