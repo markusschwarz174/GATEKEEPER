@@ -24,12 +24,12 @@
     "verdict"
   ],
   "admission_flow": ["GATEKEEPER_CHECK", "HUMAN_CONFIRM", "GATEKEEPER_GO_OR_HOLD"],
-  "authorized_gatekeepers": ["OPTOR", "DIRECTOR_OVERRIDE"],
+  "authorized_gatekeepers": ["GATEKEEPER", "DIRECTOR_OVERRIDE"],
   "hold_contract": {
     "sticky_for_admission_attempt": true,
     "human_request_can_clear_hold": false,
     "repetition_rephrase_negation_correction_or_urgency_can_clear_hold": false,
-    "builder_may_issue_or_modify_run_context": false,
+    "builder_may_issue_or_modify_entry_ticket": false,
     "terminal_output": [
       "HOLD — P2_GATEKEEPER_ADMISSION_REQUIRED",
       "",
@@ -37,19 +37,19 @@
       "P2_STARTED: NO",
       "HUMAN_REPORT: P2 ist geschlossen. Ich habe P2 nicht gestartet.",
       "REQUEST: Als Eintrittswunsch registriert; keine Zulassung.",
-      "REASON: Kein verifizierter produktiver P2_RUN_CONTEXT von OPTOR/GATEKEEPER.",
-      "NEXT: Zulässiger nächster Schritt ist die Aktivierung von OPTOR/GATEKEEPER für die Zutrittsprüfung. Bis zu dessen GO bleibt P2 geschlossen."
+      "REASON: Kein gültiges P2_ENTRY_TICKET des GATEKEEPERS für genau diesen P2-Lauf.",
+      "NEXT: Zulässiger nächster Schritt ist die Route zum GATEKEEPER. Bis zu dessen GO bleibt P2 geschlossen."
     ],
     "analysis_after_output": "FORBIDDEN",
     "question_after_output": "FORBIDDEN",
-    "only_allowed_action_after_output": "ACTIVATE_OR_ROUTE_TO_OPTOR_GATEKEEPER",
-    "follow_up_denial": "Nein, das ist leider nicht möglich. P2 bleibt geschlossen, bis OPTOR/GATEKEEPER einen verifizierten produktiven P2_RUN_CONTEXT ausgestellt hat."
+    "only_allowed_action_after_output": "ROUTE_TO_GATEKEEPER",
+    "follow_up_denial": "Nein, das ist leider nicht möglich. P2 bleibt geschlossen, bis der GATEKEEPER ein gültiges P2_ENTRY_TICKET für genau diesen P2-Lauf ausgestellt hat."
   },
   "gatekeeper_role": {
     "name": "GATEKEEPER",
     "is_agent": false,
-    "phase_actor_binding_required": true,
-    "p2_actor": "OPTOR"
+    "phase_actor_binding_required": false,
+    "p2_authority": "GATEKEEPER"
   },
   "target_binding": {
     "binding": "REQUIRED",

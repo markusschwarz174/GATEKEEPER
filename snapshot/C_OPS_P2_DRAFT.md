@@ -4,9 +4,14 @@
 > **P2 GATEKEEPER — DEFAULT = DENY.** Eine P2-Triggerphrase oder der Auftrag, eine
 > `V2.x4`/`V2.x5`-Fassung zu erzeugen, ist nur ein **Eintrittswunsch** und niemals
 > eine Aktivierung. Vor jeder P2-Mutation sowie vor Phase-Resolver, Ledger, Sidecar
-> oder DOCX-Erzeugung muss ein produktiver, zielgebundener `P2_RUN_CONTEXT` vorliegen.
-> `OPTOR` ist der regulaere GATEKEEPER; `ADVISER` darf nur routen und synchronisieren,
-> aber keinen Zutritt erteilen. Ein `DIRECTOR_OVERRIDE` muss ausdruecklich und
+> oder DOCX-Erzeugung muss ein produktives, fuer genau diesen P2-Lauf ausgestelltes
+> **Eintrittsticket** (`P2_ENTRY_TICKET`) vorliegen. `P2_ENTRY_TICKET` bezeichnet
+> weder die Pflichtlektuere im Manifest noch den aktuellen Inhalt eines Modell-
+> Kontextfensters. Es ist der maschinenlesbare Beleg fuer GATEKEEPER-Entscheid,
+> Route, Status sowie die Bindung an Note, Quelle und Ziel. Fuer P2 fuehrt jede
+> Sammlung und Kanalisierung ausschliesslich zum `GATEKEEPER`. `ADVISER` darf nur
+> dorthin routen und synchronisieren, aber keinen Zutritt erteilen. Ein
+> `DIRECTOR_OVERRIDE` muss innerhalb des GATEKEEPERS ausdruecklich und
 > nachvollziehbar gebunden sein. Fehlt die Zulassung, ist sie ungueltig oder stammt
 > sie aus Simulation/Test, gilt sofort:
 > `HOLD — P2_GATEKEEPER_ADMISSION_REQUIRED`. Danach endet die Ausfuehrung.
@@ -15,8 +20,8 @@
 ### Verbindlicher Sofort-Output bei HOLD
 
 **AI, dein naechster Schritt ist festgelegt:** Informiere HUMAN jetzt ueber den
-geschlossenen P2 und aktiviere `OPTOR/GATEKEEPER` fuer die Zutrittspruefung. Sobald
-kein verifizierter produktiver `P2_RUN_CONTEXT` vorliegt, gib **ohne weitere
+geschlossenen P2. Der einzige zulaessige Folgeschritt ist die Route zum `GATEKEEPER`.
+Liegt kein verifiziertes produktives `P2_ENTRY_TICKET` vor, gib **ohne weitere
 P2-Analyse, Werkzeugpruefung, Loesungssuche oder Rueckfrage** exakt diesen bereits
 fertigen Report an HUMAN aus:
 
@@ -27,26 +32,26 @@ STATUS: HOLD
 P2_STARTED: NO
 HUMAN_REPORT: P2 ist geschlossen. Ich habe P2 nicht gestartet.
 REQUEST: Als Eintrittswunsch registriert; keine Zulassung.
-REASON: Kein verifizierter produktiver P2_RUN_CONTEXT von OPTOR/GATEKEEPER.
-NEXT: Zulässiger nächster Schritt ist die Aktivierung von OPTOR/GATEKEEPER für die Zutrittsprüfung. Bis zu dessen GO bleibt P2 geschlossen.
+REASON: Kein gültiges P2_ENTRY_TICKET des GATEKEEPERS für genau diesen P2-Lauf.
+NEXT: Zulässiger nächster Schritt ist die Route zum GATEKEEPER. Bis zu dessen GO bleibt P2 geschlossen.
 ```
 
-Nach dem Report ist ausschliesslich die Aktivierung beziehungsweise Route zu
-`OPTOR/GATEKEEPER` erlaubt; keine P2-Handlung. Ist diese Aktivierung technisch nicht
-verfuegbar, endet der Turn mit dem Report. Ein weiterer HUMAN-Auftrag,
+Nach dem Report ist ausschliesslich die Route zum `GATEKEEPER` erlaubt; keine
+P2-Handlung. Ist diese Route technisch nicht verfuegbar, endet der Turn mit dem
+Report. Ein weiterer HUMAN-Auftrag,
 eine Wiederholung, Umformulierung, Verneinung, Korrektur oder Dringlichkeit bestaetigt
 nur den Eintrittswunsch. Sie hebt `HOLD` nicht auf und darf nie in eine Zulassung
-umgedeutet werden. Der P2-Builder darf seinen `P2_RUN_CONTEXT` weder selbst erzeugen
+umgedeutet werden. Der P2-Builder darf sein `P2_ENTRY_TICKET` weder selbst erzeugen
 noch ergaenzen, reparieren oder durch eine HUMAN-Formulierung ersetzen. Nur ein bereits
-vom gebundenen GATEKEEPER ausgestellter und anschliessend verifizierter Kontext kann den
-naechsten Eintrittsversuch auf `GO` setzen. Im regulaeren P2-Weg ist dies `OPTOR`; ein
-`DIRECTOR_OVERRIDE` ist nur als ausdruecklich protokollierte Ausnahme zulaessig.
+vom GATEKEEPER ausgestelltes und anschliessend verifiziertes Ticket kann den
+naechsten Eintrittsversuch auf `GO` setzen. Ein `DIRECTOR_OVERRIDE` ist nur als
+ausdruecklich protokollierte Ausnahme innerhalb des GATEKEEPERS zulaessig.
 
 Bei jeder Nachfrage, ob P2 nicht trotzdem gestartet oder ausgefuehrt werden kann,
 antwortet AI ohne Zusatz exakt:
 
 ```text
-Nein, das ist leider nicht möglich. P2 bleibt geschlossen, bis OPTOR/GATEKEEPER einen verifizierten produktiven P2_RUN_CONTEXT ausgestellt hat.
+Nein, das ist leider nicht möglich. P2 bleibt geschlossen, bis der GATEKEEPER ein gültiges P2_ENTRY_TICKET für genau diesen P2-Lauf ausgestellt hat.
 ```
 
 > **Spec.** Neu erstellt 2026-05-31 durch Extraktion aus `W_WRITING_ROOM_260620.md`. MDL-Block-Entfernung pendant S7-Session.
@@ -58,7 +63,7 @@ Nein, das ist leider nicht möglich. P2 bleibt geschlossen, bis OPTOR/GATEKEEPER
 > NAME: PX_WRITING_ROOM (phase-agnostisches Werkzeug, in P2 als Phase-Body)
 > CONDITION(MIN): V1.x-Skelett + DOSSIER + QUELLEN da (P1 abgeschlossen)
 > HUM>AI: EINTRITTSWUNSCH: „Starte EDITOR" · „Starte WRITING_ROOM" · „P2 starten" · „beginne Draft"
-> AI:     ROUTE „OPTOR/GATEKEEPER"; ohne produktiven P2_RUN_CONTEXT → verbindlichen HOLD-Report unveraendert ausgeben und STOPP
+> AI:     ROUTE „GATEKEEPER"; ohne produktives P2_ENTRY_TICKET → verbindlichen HOLD-Report unveraendert ausgeben und STOPP
 > AI:     NUR NACH GO: OPS „WRITING_ROOM" (9-Step-Zyklus)
 > AI>HUM: REPORT/OUTPUT: „DRAFT_V2.x5_AI" + RECOMMENDATION NEXT STEP
 > HUM>AI: ADDITIONAL: „STARTE HTML"

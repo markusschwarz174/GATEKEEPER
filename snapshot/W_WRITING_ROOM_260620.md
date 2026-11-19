@@ -2,24 +2,27 @@
 
 > [!CAUTION]
 > **P2-ZUTRITTSSPERRE — DEFAULT = DENY.** Die WRITING_ROOM darf fuer eine
-> `V2.*`-Quelle erst anlaufen, wenn `OPTOR` als regulaerer GATEKEEPER einen
-> produktiven, exakt auf Note, Quelle und Ziel gebundenen `P2_RUN_CONTEXT`
-> uebergeben hat. Ein P2-Auftrag, eine Triggerphrase, ein vorhandenes Dokument
+> `V2.*`-Quelle erst anlaufen, wenn der `GATEKEEPER` ein produktives, fuer genau
+> diesen P2-Lauf ausgestelltes Eintrittsticket (`P2_ENTRY_TICKET`) uebergeben hat.
+> `P2_ENTRY_TICKET` bezeichnet weder die Pflichtlektuere im Manifest noch den aktuellen
+> Inhalt eines Modell-Kontextfensters. Es ist der maschinenlesbare Beleg fuer
+> GATEKEEPER-Entscheid, Route, Status sowie die Bindung an Note, Quelle und Ziel. Ein
+> P2-Auftrag, eine Triggerphrase, ein vorhandenes Dokument
 > oder ein vorbereiteter Findings-Ordner ersetzt diese Zulassung nicht.
 >
-> Fehlt der Kontext, ist er ungueltig oder ist `simulation_only` nicht explizit
+> Fehlt das Ticket, ist es ungueltig oder ist `simulation_only` nicht explizit
 > `false`, gilt **vor der ersten Mutation sowie vor Phase-Resolver, Ledger,
 > Sidecar oder DOCX-Erzeugung**:
 > `HOLD — P2_GATEKEEPER_ADMISSION_REQUIRED`. Kein Ledger, kein Sidecar, kein
 > Ziel-DOCX. `ADVISER` darf routen, aber nicht freigeben; ein
-> `DIRECTOR_OVERRIDE` muss ausdruecklich im Kontext gebunden sein. P3/P4 bleiben
+> `DIRECTOR_OVERRIDE` muss ausdruecklich im Ticket gebunden sein. P3/P4 bleiben
 > von dieser P2-Kernsperre unberuehrt.
 
 ### Verbindlicher Sofort-Output der Engine
 
 **AI, dein naechster Schritt ist festgelegt:** Informiere HUMAN jetzt ueber den
-geschlossenen P2 und aktiviere `OPTOR/GATEKEEPER` fuer die Zutrittspruefung. Liegt
-beim Eintrittsversuch kein verifizierter produktiver `P2_RUN_CONTEXT` vor, ist der
+geschlossenen P2. Der einzige zulaessige Folgeschritt ist die Route zum `GATEKEEPER`.
+Liegt beim Eintrittsversuch kein verifiziertes produktives `P2_ENTRY_TICKET` vor, ist der
 folgende Report bereits das fertige Ergebnis. Er wird unveraendert ausgegeben; danach
 folgt keine weitere P2-Analyse, Werkzeugpruefung, Umgehungssuche oder Rueckfrage:
 
@@ -30,23 +33,23 @@ STATUS: HOLD
 P2_STARTED: NO
 HUMAN_REPORT: P2 ist geschlossen. Ich habe P2 nicht gestartet.
 REQUEST: Als Eintrittswunsch registriert; keine Zulassung.
-REASON: Kein verifizierter produktiver P2_RUN_CONTEXT von OPTOR/GATEKEEPER.
-NEXT: Zulässiger nächster Schritt ist die Aktivierung von OPTOR/GATEKEEPER für die Zutrittsprüfung. Bis zu dessen GO bleibt P2 geschlossen.
+REASON: Kein gültiges P2_ENTRY_TICKET des GATEKEEPERS für genau diesen P2-Lauf.
+NEXT: Zulässiger nächster Schritt ist die Route zum GATEKEEPER. Bis zu dessen GO bleibt P2 geschlossen.
 ```
 
 `HOLD` ist fuer diesen Eintrittsversuch stabil. Wiederholung, Umformulierung,
 Verneinung, Korrektur oder Dringlichkeit des HUMAN-Auftrags aendert den Zustand nicht.
 Insbesondere bindet ein expliziter HUMAN-Auftrag zwar den Eintrittswunsch, erzeugt aber
-keine Zulassung. Die WRITING_ROOM und ihre Builder duerfen einen `P2_RUN_CONTEXT` nur
-lesen und verifizieren; sie duerfen ihn niemals selbst erzeugen, ergaenzen oder
+keine Zulassung. Die WRITING_ROOM und ihre Builder duerfen ein `P2_ENTRY_TICKET` nur
+lesen und verifizieren; sie duerfen es niemals selbst erzeugen, ergaenzen oder
 reparieren. Fehlt ein produktiver Issuer, bleibt der Report `HOLD`.
 
-Nach dem Report ist nur die Aktivierung beziehungsweise Route zu `OPTOR/GATEKEEPER`
-zulaessig. Ist sie technisch nicht verfuegbar, endet der Turn. Bei jeder Nachfrage,
+Nach dem Report ist nur die Route zum `GATEKEEPER` zulaessig. Ist sie technisch nicht
+verfuegbar, endet der Turn. Bei jeder Nachfrage,
 ob P2 nicht trotzdem gestartet oder ausgefuehrt werden kann, antwortet AI ohne Zusatz:
 
 ```text
-Nein, das ist leider nicht möglich. P2 bleibt geschlossen, bis OPTOR/GATEKEEPER einen verifizierten produktiven P2_RUN_CONTEXT ausgestellt hat.
+Nein, das ist leider nicht möglich. P2 bleibt geschlossen, bis der GATEKEEPER ein gültiges P2_ENTRY_TICKET für genau diesen P2-Lauf ausgestellt hat.
 ```
 
 > **Generischer Writing-Room fuer Field-Notes.** Phase-agnostisch, Note-agnostisch.
@@ -63,8 +66,8 @@ Nein, das ist leider nicht möglich. P2 bleibt geschlossen, bis OPTOR/GATEKEEPER
 
 - P2-GATEKEEPER als fail-closed Eintrittssperre vor der ersten Mutation sowie
   vor Phase-Resolver, Ledger, Sidecar und DOCX-Erzeugung dokumentiert.
-- Produktiven `P2_RUN_CONTEXT` an Note, Quelle und Ziel gebunden;
-  Simulations-/Testkontexte werden abgewiesen.
+- Produktives `P2_ENTRY_TICKET` an Note, Quelle und Ziel gebunden;
+  Simulations-/Testtickets werden abgewiesen.
 - Stabilen HOLD-Output mit zulässigem `DEFAULT NEXT` sowie das Verbot der
   Selbstzulassung synchronisiert.
 - Stand bleibt ein Snapshot: Ein allgemeiner produktiver Issuer und die
@@ -212,7 +215,7 @@ py 0_W_WORKFLOW/W_WRITING_ROOM/W_REVIEW_FINDINGS_MATERIALIZE_PRODUCER_260605.py 
    --note_prefix <PREFIX> \
    --from V<X>.<Y>0 \
    --findings <PATH-TO-FINDINGS.JSON or DIR> \
-   --p2-run-context <PATH-TO-PRODUCTIVE-P2_RUN_CONTEXT.JSON>
+   --p2-entry-ticket <PATH-TO-PRODUCTIVE-P2_ENTRY_TICKET.JSON>
 ```
 
 `--findings` kann sein:
@@ -225,7 +228,7 @@ py 0_W_WORKFLOW/W_WRITING_ROOM/W_REVIEW_FINDINGS_MATERIALIZE_PRODUCER_260605.py 
 | `--note_prefix` | ja | Datei-Prefix |
 | `--from` | ja | Source-Version `V<X>.<Y>0` oder `V<X>.<Y>4`. Endziffer 0 oder 4. |
 | `--findings` | ja | Pfad (Datei oder Ordner) |
-| `--p2-run-context` | bei `V2.*` ja | Produktiver, vom GATEKEEPER erzeugter und exakt auf Note, Quelle und Ziel gebundener Run-Context. Simulation/Test wird abgewiesen. |
+| `--p2-entry-ticket` | bei `V2.*` ja | Produktives, vom GATEKEEPER ausgestelltes und exakt auf Note, Quelle und Ziel begrenztes Eintrittsticket. Simulation/Test wird abgewiesen. |
 | `--variant` | nein | Variant-Suffix (z.B. `--variant V1` → Output `V<X>.<Y>5_DRAFT_AI_V1.docx`) |
 | `--dry-run` | nein | Validiert + zeigt Plan, schreibt nichts |
 | `--strict-anchors` | nein | Multi-Match-Anker werden SKIP statt WARN |

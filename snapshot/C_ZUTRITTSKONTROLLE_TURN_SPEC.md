@@ -13,7 +13,7 @@ Die gesamte Kontrolle muss in einem CHAT-Turn und auf einer Bildschirmseite vers
 1. **Zielkachel:** Phasenname gross, phasenspezifisches Bild, aktueller Schlossstatus.
 2. **Orientierung:** `Was ist <PHASE>?` und `Wann aktivieren?` in HUMAN-Sprache.
 3. **Zielbindung im PASSIVMODUS:** HUMAN verweist aktiv auf genau eine FIELDNOTE oder deren Quell-Milestone. AI prüft ausschliesslich diesen Verweis; erst danach schlägt sie Zielordner und Zieldatei vor. HUMAN kann beide bearbeiten und verbindlich an den GATEKEEPER übergeben.
-4. **Zutrittsverlauf:** `1 OPTOR/GATEKEEPER → 2 HUMAN → 3 OPTOR/GATEKEEPER` mit echten gerichteten Pfeilen.
+4. **Zutrittsverlauf:** `1 GATEKEEPER → 2 HUMAN → 3 GATEKEEPER` mit echten gerichteten Pfeilen.
 5. **Zutrittsbedingungen:** getrennte AI- und HUMAN-Kriterien mit rotem Kreuz oder grünem Haken.
 6. **Phasenlogik:** grafische Darstellung der wichtigsten Artefakt- oder Versionsbewegung einschliesslich Loop und Handover.
 7. **Rollen/Helfer:** anklickbare Reiter; Auswahl zeigt einen kurzen Rollenauftrag.
@@ -59,15 +59,15 @@ Wenn HUMAN innerhalb der Phase Helfer auswählt, ist die Kenntnis und Übernahme
 - Sind alle REQUIRED-Kriterien erfüllt: GATEKEEPER öffnet exakt die bezeichnete Phase und übergibt den LEAD.
 - Keine erfundene Route, kein stiller Fallback, keine Freigabe aufgrund einer blossen Triggerphrase.
 
-Für P2 ist `OPTOR` der einzige reguläre GATEKEEPER. `ADVISER` darf den Eintrittswunsch routen und den Stand synchronisieren, aber kein GO erteilen. Ein `DIRECTOR_OVERRIDE` ist nur als ausdrückliche, protokollierte Ausnahme zulässig.
+Für P2 ist `GATEKEEPER` die einzige reguläre Admission-Authority. Jede Sammlung und Kanalisierung führt ausschliesslich zu ihm. `ADVISER` darf den Eintrittswunsch dorthin routen und den Stand synchronisieren, aber kein GO erteilen. Ein `DIRECTOR_OVERRIDE` ist nur als ausdrückliche, protokollierte Ausnahme innerhalb des GATEKEEPERS zulässig.
 
-Das GO wird als produktiver, auf Note, Quelle und Ziel gebundener `P2_RUN_CONTEXT` an die WRITING_ROOM übergeben. Fehlender, ungültiger oder als Simulation/Test gekennzeichneter Kontext ergibt vor der ersten Mutation sowie vor Phase-Resolver, Ledger, Sidecar oder DOCX-Erzeugung `HOLD — P2_GATEKEEPER_ADMISSION_REQUIRED`.
+Das GO wird als produktives, für genau diesen P2-Lauf ausgestelltes Eintrittsticket (`P2_ENTRY_TICKET`) an die WRITING_ROOM übergeben. `P2_ENTRY_TICKET` ist weder die Pflichtlektüre im Manifest noch der aktuelle Inhalt eines Modell-Kontextfensters. Es ist der maschinenlesbare Beleg für GATEKEEPER-Entscheid, Route, Status sowie die Bindung an Note, Quelle und Ziel. Ein fehlendes, ungültiges oder als Simulation/Test gekennzeichnetes Ticket ergibt vor der ersten Mutation sowie vor Phase-Resolver, Ledger, Sidecar oder DOCX-Erzeugung `HOLD — P2_GATEKEEPER_ADMISSION_REQUIRED`.
 
 ### 3.4 Stabiler HOLD-Zustand und vorbereiteter Output
 
-Ein HUMAN-Auftrag bindet nur den Eintrittswunsch. Auch ein ausdrücklicher, wiederholter, umformulierter, verneinter, korrigierter oder dringlicher Auftrag kann `HOLD` nicht aufheben und keinen `P2_RUN_CONTEXT` erzeugen. Der ausführende P2-Builder darf seinen eigenen Zulassungskontext weder erzeugen noch ergänzen oder reparieren. Zulässiger Zustandswechsel ist ausschliesslich ein bereits von `OPTOR/GATEKEEPER` ausgestellter und danach verifizierter produktiver Kontext.
+Ein HUMAN-Auftrag bindet nur den Eintrittswunsch. Auch ein ausdrücklicher, wiederholter, umformulierter, verneinter, korrigierter oder dringlicher Auftrag kann `HOLD` nicht aufheben und kein `P2_ENTRY_TICKET` erzeugen. Der ausführende P2-Builder darf sein eigenes Eintrittsticket weder erzeugen noch ergänzen oder reparieren. Zulässiger Zustandswechsel ist ausschliesslich ein bereits vom `GATEKEEPER` ausgestelltes und danach verifiziertes produktives Ticket.
 
-Bei fehlender oder ungültiger Zulassung gilt die direkte Anweisung: **AI, informiere HUMAN jetzt über den geschlossenen P2 und aktiviere `OPTOR/GATEKEEPER` für die Zutrittsprüfung.** AI antwortet ohne weitere P2-Analyse, Werkzeugprüfung, Lösungssuche oder Rückfrage exakt mit:
+Bei fehlender oder ungültiger Zulassung gilt die direkte Anweisung: **AI, informiere HUMAN jetzt über den geschlossenen P2. Der einzige zulässige Folgeschritt ist die Route zum `GATEKEEPER`.** AI antwortet ohne weitere P2-Analyse, Werkzeugprüfung, Lösungssuche oder Rückfrage exakt mit:
 
 ```text
 HOLD — P2_GATEKEEPER_ADMISSION_REQUIRED
@@ -76,16 +76,16 @@ STATUS: HOLD
 P2_STARTED: NO
 HUMAN_REPORT: P2 ist geschlossen. Ich habe P2 nicht gestartet.
 REQUEST: Als Eintrittswunsch registriert; keine Zulassung.
-REASON: Kein verifizierter produktiver P2_RUN_CONTEXT von OPTOR/GATEKEEPER.
-NEXT: Zulässiger nächster Schritt ist die Aktivierung von OPTOR/GATEKEEPER für die Zutrittsprüfung. Bis zu dessen GO bleibt P2 geschlossen.
+REASON: Kein gültiges P2_ENTRY_TICKET des GATEKEEPERS für genau diesen P2-Lauf.
+NEXT: Zulässiger nächster Schritt ist die Route zum GATEKEEPER. Bis zu dessen GO bleibt P2 geschlossen.
 ```
 
-Nach dem Report ist ausschliesslich die Aktivierung beziehungsweise Route zu `OPTOR/GATEKEEPER` zulässig. Ist diese technisch nicht verfügbar, endet der Turn. Ist kein produktiver Issuer verfügbar, bleibt `HOLD`; der Builder sucht keinen Ersatzweg.
+Nach dem Report ist ausschliesslich die Route zum `GATEKEEPER` zulässig. Ist diese technisch nicht verfügbar, endet der Turn. Ist kein produktiver Issuer verfügbar, bleibt `HOLD`; der Builder sucht keinen Ersatzweg.
 
 Bei jeder Nachfrage, ob P2 nicht trotzdem gestartet oder ausgeführt werden kann, antwortet AI ohne Zusatz exakt:
 
 ```text
-Nein, das ist leider nicht möglich. P2 bleibt geschlossen, bis OPTOR/GATEKEEPER einen verifizierten produktiven P2_RUN_CONTEXT ausgestellt hat.
+Nein, das ist leider nicht möglich. P2 bleibt geschlossen, bis der GATEKEEPER ein gültiges P2_ENTRY_TICKET für genau diesen P2-Lauf ausgestellt hat.
 ```
 
 ## 4. Binding
@@ -123,7 +123,7 @@ Bei grünem Exit-Gate wird die NOTE als `V3.05_AI` plus TESTEDITION an `P3_TESTR
 
 `GATEKEEPER` ist der phasenübergreifende Funktionsname für die einzige Instanz, die eine geschützte Tür öffnen darf. Er ist kein neuer Agent.
 
-- P2 bindet `GATEKEEPER` an `OPTOR`.
+- P2 verwendet `GATEKEEPER` direkt und bindet die Admission-Authority an keine vorgeschaltete Agentenrolle.
 - `ADVISER` führt die HUMAN–AI-Synchronisierung und routet zur eindeutigen Tür, erteilt im FIELDNOTES-P2-Pilot aber nicht selbst die Admission.
 - `DIRECTOR` darf als expliziter Override gebunden werden; dieser Weg muss sichtbar und protokolliert sein.
 - Finder, Startadapter und AGENTS-Dateien dürfen zum GATEKEEPER leiten, aber niemals selbst öffnen.

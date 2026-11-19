@@ -4,7 +4,8 @@
   "display_name": "P2_WRITING_ROOM",
   "gatekeeper": {
     "role": "GATEKEEPER",
-    "actor": "OPTOR",
+    "authority": "GATEKEEPER",
+    "actor_binding": "NONE",
     "adviser_routes_and_synchronizes": true,
     "director_override": "CONDITIONAL"
   },

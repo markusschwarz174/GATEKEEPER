@@ -22,7 +22,7 @@ An unresolved reference therefore does not mean that the missing file is meant t
 | `snapshot/C_ZUTRITTSKONTROLLE_TURN_SPEC.md` | Draft interaction and admission-control SPEC |
 | `snapshot/ZUTRITTSKONTROLLE_SCHEMA.json` | Machine-readable draft of the admission and HOLD contract |
 | `example/p2_admission_gate.py` | Minimal, isolated example of the admission check |
-| `example/P2_RUN_CONTEXT.example.json` | Synthetic example of a target-bound run context |
+| `example/P2_ENTRY_TICKET.example.json` | Synthetic example of an entry ticket bound to one exact P2 run |
 | `example/P2_WRITING_ROOM_PROFILE.json` | Draft P2 presentation and admission profile |
 | `tests/test_p2_admission_gate.py` | Positive and negative tests for the minimal example |
 | `docs/P2_WRITING_ROOM_GATE_TURN.png` | Draft reference representation of the intended gate turn |
@@ -34,7 +34,7 @@ From the repository root:
 ```powershell
 python -m pytest tests/test_p2_admission_gate.py -q
 python example/p2_admission_gate.py `
-  --run-context example/P2_RUN_CONTEXT.example.json `
+  --entry-ticket example/P2_ENTRY_TICKET.example.json `
   --note-root example/demo_note `
   --source example/demo_note/DEMO_V2.40_DRAFT_HUMAN.docx `
   --target example/demo_note/DEMO_V2.45_DRAFT_AI.docx
@@ -46,12 +46,12 @@ need to exist because this isolated gate does not open or modify them.
 ## Technical and security boundaries
 
 - The demonstrated blocker protects one concrete P2 builder route. It is not proof that every possible entry route has already been inventoried or closed.
-- The current prototype checks the run-context format, state, actor label, and exact path binding to note, source, and target.
+- The current prototype checks the entry-ticket format, state, GATEKEEPER authority, and exact path binding to note, source, and target.
 - The snapshot does not provide cryptographic proof of issuer provenance and does not prove that an AI understood or followed the bound SPECS in substance.
 - A prepared `DEFAULT NEXT` is a project-specific interaction pattern tested in this workflow, not a claim of a new general security principle.
 - GATEKEEPER is not a security boundary against malicious software, hostile users, or a compromised runtime.
 - The graphical gate turn is a draft reference design, not a fully wired productive UI.
-- Example paths and values are synthetic. No productive credentials, passwords, tokens, personal data, or private run contexts are part of the intended snapshot.
+- Example paths and values are synthetic. No productive credentials, passwords, tokens, personal data, or private entry tickets are part of the intended snapshot.
 
 ## Licence
 

@@ -5,7 +5,7 @@
     "no content-hash binding",
     "no replay protection"
   ],
-  "context_format": "P2_RUN_CONTEXT_V1",
+  "ticket_format": "P2_ENTRY_TICKET_V1",
   "simulation_only": false,
   "control_result": "PASS",
   "status": "OPEN",
@@ -13,7 +13,7 @@
   "route_id": "FIELDNOTES.P2.WRITING_ROOM",
   "entry_actor": "EDITOR",
   "lead_owner": "EDITOR",
-  "gatekeeper_actor": "OPTOR",
+  "gatekeeper_actor": "GATEKEEPER",
   "target_binding": {
     "pass_token": "TARGET_BINDING_PASS",
     "note_root": "demo_note",

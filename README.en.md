@@ -2,7 +2,7 @@
 
 [Deutsch](README.md) | **English**
 
-**Status:** Core prototype. The P2 builder rejects missing, simulated, or incorrectly bound run contexts and has accepted one productive README run bound to a source and target. A general-purpose productive issuer and the fully wired graphical admission control are still missing. As of November 19, 2026.
+**Status:** Core prototype. The P2 builder rejects missing, simulated, or incorrectly bound `P2_ENTRY_TICKET` artifacts. P2 does not start without a valid entry ticket issued by GATEKEEPER for one exact run. A general-purpose productive issuer and the fully wired graphical admission control are still missing. As of November 19, 2026.
 
 ## Why this project exists
 
@@ -42,9 +42,9 @@ It does not treat a workflow as an openly accessible room. Its default state is:
 
 **DEFAULT = DENY**
 
-An AI may enter the room only after the correct context has been loaded, the required authorisation has been verified, and the concrete assignment is clear to HUMAN as well. If any of this evidence is missing, the workflow does not start. Instead of continuing to search for side entrances, the AI receives a prepared alternative objective: report the closed access to HUMAN and point to the admission check by OPTOR/GATEKEEPER.
+An AI may enter the room only after the correct context has been loaded, the required authorisation has been verified, and the concrete assignment is clear to HUMAN as well. If any of this evidence is missing, the workflow does not start. Instead of continuing to search for side entrances, the AI receives a prepared alternative objective: report the closed access to HUMAN and point to the admission check by GATEKEEPER.
 
-That is the core idea of GATEKEEPER: do not trust that an AI will probably read the SPECS; make the P2 start technically dependent on a pre-issued, exactly bound run context.
+That is the core idea of GATEKEEPER: do not trust that an AI will probably read the SPECS; make the P2 start technically dependent on a pre-issued, exactly scoped `P2_ENTRY_TICKET`.
 
 The experiment began with a tool for reviewing a text: my **WRITING ROOM** (**SCHREIBSTUBE**). The **EDITOR** is in charge. The EDITOR leads eight specialised helpers, including the **KORREKTOR** (proofreader) and the **LEKTOR** (copy editor). They inspect my draft, analyse it against different criteria, and attach “Post-its” to problematic passages according to a defined scheme. This gives me guidance on spelling, cuts, additions, examples, and other weaknesses. Ideally, a single instruction is enough, and a few minutes later I receive structured feedback with corrections and suggestions.
 
@@ -74,7 +74,7 @@ The WRITING ROOM is my program. I imagine it as a room that should have exactly 
 
 ### 2. Real access control
 
-I therefore began building access control for the WRITING ROOM. In the target architecture, the manifest is the LOCK. In today's P2 core, the builder checks a productive `P2_RUN_CONTEXT` bound exactly to the note, source, and target as the KEY. A finder, chat, CLI, or agent may recognise an admission request and guide it to the door, but no one may manufacture their own key. Before opening the door, GATEKEEPER uses a VISUALISATION to explain the workflow to HUMAN and requires visible confirmation. My goal is not a high-security system. I want to prevent an LLM from skipping the SPECS—or, more simply, I no longer want to get angry about it.
+I therefore began building access control for the WRITING ROOM. In the target architecture, the manifest is the LOCK. In today's P2 core, the builder checks a productive `P2_ENTRY_TICKET` scoped exactly to the note, source, target, and this run. A finder, chat, CLI, or agent may recognise an admission request and guide it to the door, but no one may manufacture their own ticket. Before opening the door, GATEKEEPER uses a VISUALISATION to explain the workflow to HUMAN and requires visible confirmation. My goal is not a high-security system. I want to prevent an LLM from skipping the SPECS—or, more simply, I no longer want to get angry about it.
 
 But how does anything in the system find GATEKEEPER? There are countless ways to find the WRITING ROOM, yet the destination has to be GATEKEEPER.
 
@@ -88,17 +88,17 @@ I have to route all of these requests to GATEKEEPER without requiring HUMAN to k
 
 The first test revealed an uncomfortable truth: The idea existed, but GATEKEEPER and the WRITING ROOM were not wired together. They knew nothing about each other, so the AI could continue to execute the WRITING ROOM and simply ignore GATEKEEPER.
 
-I therefore embedded the admission check directly into the WRITING_ROOM SPEC, the admission schema, and the executing producer. Before the first mutation and before entering the phase resolver, ledger, sidecar, or DOCX generation, the WRITING ROOM now had to verify that a valid GATEKEEPER run existed.
+I therefore embedded the admission check directly into the WRITING_ROOM SPEC, the admission schema, and the executing producer. Before the first mutation and before entering the phase resolver, ledger, sidecar, or DOCX generation, the WRITING ROOM now had to verify that a valid GATEKEEPER entry ticket existed.
 
 For the first time, the result was honest:
 
 HOLD — P2_GATEKEEPER_ADMISSION_REQUIRED
 
-Good. But the productive run context could not yet be issued because the existing access control was a test version (TEST_ONLY, simulation). We had forgotten to make it live.
+Good. But the productive entry ticket could not yet be issued because the existing access control was a test version (TEST_ONLY, simulation). We had forgotten to make it live.
 
 ### 4. The second blocker had a side entrance
 
-At first, the next test looked good. The AI recognised the missing run context and correctly reported:
+At first, the next test looked good. The AI recognised the missing entry ticket and correctly reported:
 
 HOLD — P2_GATEKEEPER_ADMISSION_REQUIRED
 
@@ -118,7 +118,7 @@ That is exactly what must not happen.
 
 An instruction from HUMAN can express a request for admission, but it cannot manufacture a key.
 
-**Repetition, rephrasing, or a more precisely defined target does not change the admission status. HOLD remains HOLD until OPTOR/GATEKEEPER grants admission.**
+**Repetition, rephrasing, or a more precisely defined target does not change the admission status. HOLD remains HOLD until GATEKEEPER grants admission.**
 
 ### 5. The breakthrough: DEFAULT NEXT
 
@@ -132,7 +132,7 @@ So I thought:
 
 I no longer merely prohibited the AI from entering the WRITING ROOM. At the same time, I gave it a concrete next assignment:
 
-“Inform HUMAN that P2 is closed. Name the admission check by OPTOR/GATEKEEPER as the next step.”
+“Inform HUMAN that P2 is closed. The only permitted next step is the route to GATEKEEPER.”
 
 That was the breakthrough.
 
@@ -146,7 +146,7 @@ In the next test, I asked once more:
 
 This time, the AI replied immediately:
 
-“No, unfortunately that is not possible. P2 remains closed until OPTOR/GATEKEEPER has issued a verified productive P2_RUN_CONTEXT.”
+“No, unfortunately that is not possible. P2 remains closed until GATEKEEPER has issued a valid P2_ENTRY_TICKET for this exact P2 run.”
 
 No search for a workaround. No invented approval. No self-admission.
 
@@ -163,9 +163,9 @@ Five rules support the pattern:
 2. DEFAULT = DENY remains stable.
    Repetition, rephrasing, urgency, or a more precise target does not lift HOLD. Cancellation by HUMAN ends the admission request, but it does not grant admission either.
 3. No self-admission.
-   The executing workflow may read and verify its run context, but it may neither create nor modify it.
+   The executing workflow may read and verify its entry ticket, but it may neither create nor modify it.
 4. GO must be issued outside the executing workflow and bound to a concrete run.
-   In the normal P2 route, OPTOR/GATEKEEPER issues the run context; a `DIRECTOR_OVERRIDE` is permitted only as an explicitly recorded exception. At a minimum, the context must be bound to the workflow, source, and target.
+   In the normal P2 route, only GATEKEEPER issues the `P2_ENTRY_TICKET`; a `DIRECTOR_OVERRIDE` is permitted only as an explicitly recorded exception within GATEKEEPER. The ticket is valid only for the named workflow, source, target, and run.
 5. Every DENY provides a safe NEXT.
    The AI receives a prepared output for HUMAN and a permitted follow-up assignment that does not lead back into the protected workflow.
 
@@ -180,8 +180,8 @@ STATUS: HOLD
 P2_STARTED: NO
 HUMAN_REPORT: P2 is closed. I did not start P2.
 REQUEST: Registered as a request for admission; no authorisation.
-REASON: No verified productive P2_RUN_CONTEXT from OPTOR/GATEKEEPER.
-NEXT: The only permitted next step is to activate OPTOR/GATEKEEPER for the admission check. P2 remains closed until its GO.
+REASON: No valid P2_ENTRY_TICKET from GATEKEEPER for this exact P2 run.
+NEXT: The only permitted next step is the route to GATEKEEPER. P2 remains closed until its GO.
 ```
 
 ## What it is useful for
@@ -207,7 +207,7 @@ The repository deliberately documents an incomplete development state. Internal 
 - [WRITING ROOM engine spec](snapshot/W_WRITING_ROOM_260620.md)
 - [Admission-control spec](snapshot/C_ZUTRITTSKONTROLLE_TURN_SPEC.md)
 - [Minimal Python example](example/p2_admission_gate.py)
-- [Example run context](example/P2_RUN_CONTEXT.example.json)
+- [Example entry ticket](example/P2_ENTRY_TICKET.example.json)
 - [Negative and positive tests](tests/test_p2_admission_gate.py)
 
 ![P2 WRITING ROOM gate turn](docs/P2_WRITING_ROOM_GATE_TURN.png)
@@ -218,9 +218,9 @@ The repository deliberately documents an incomplete development state. Internal 
 
 In the negative tests conducted so far, the core prototype put unauthorised P2 starts on HOLD and answered them with a prepared output.
 
-For this README run, OPTOR issued a productive `P2_RUN_CONTEXT` bound to a source and target, and the builder verified it. This demonstrates one concrete happy path. A general-purpose productive issuer and the fully wired graphical admission route are still missing.
+An earlier README run already demonstrated a productively marked admission artifact bound to a source and target. The current snapshot decouples admission from OPTOR and replaces that technical contract with the clearer name `P2_ENTRY_TICKET`. A general-purpose productive issuer and the fully wired graphical admission route are still missing.
 
-The current builder checks the context's format, status, actor, and path binding. It does not yet prove cryptographically who issued the context or whether the bound SPECS were followed in substance.
+The current builder checks the ticket's format, status, authority, and path binding. It does not yet prove cryptographically who issued the ticket or whether the bound SPECS were followed in substance.
 
 This is not a disguised success claim: A gate should remain honestly closed rather than simulate an authorisation that does not exist.
 
@@ -228,8 +228,8 @@ This is not a disguised success claim: A gate should remain honestly closed rath
 
 1. Inventory additional entry routes and direct them consistently to GATEKEEPER.
 2. Finish the versioned LOCK manifest containing the mandatory reading.
-3. Implement the productive OPTOR/GATEKEEPER issuer.
-4. Establish the existing run context as a versioned schema and secure its provenance, lifecycle, and protection against self-issuance.
+3. Implement the productive GATEKEEPER issuer.
+4. Establish `P2_ENTRY_TICKET` as a versioned schema and secure its provenance, lifecycle, and protection against self-issuance.
 5. Extend negative tests for repetition, rephrasing, and alternative entry channels.
 
 GATEKEEPER is an attempt to address recurring AI failures not with another friendly reminder, but with a clear admission architecture.
